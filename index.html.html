@@ -54,22 +54,119 @@ tailwind.config = {
         -webkit-font-smoothing: antialiased;
     }
 
-    /* Floating Label Inputs */
-    .input-group { position: relative; }
-    .input-field {
-        width: 100%; border: 1px solid #E2E8F0; background: #FFFFFF;
-        padding: 1rem 0.75rem 0.5rem; border-radius: 0.5rem; outline: none;
-        transition: all 0.2s ease; font-size: 0.95rem; color: #1E293B;
+    /* ============================================
+       Booking Form
+       ============================================ */
+    .field { position: relative; }
+
+    .field-label {
+        display: block; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.01em;
+        color: #334155; margin-bottom: 0.45rem;
     }
-    .input-field:focus { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-    .input-label {
-        position: absolute; margin-inline-start: 0.75rem; top: 0.8rem;
-        color: #64748B; font-size: 0.95rem; pointer-events: none; transition: all 0.2s ease;
+    .field-label .req { color: #EF4444; margin-inline-start: 0.15rem; }
+
+    .control-wrap { position: relative; }
+
+    .control {
+        width: 100%; height: 3.25rem;
+        border: 1px solid #E2E8F0; border-radius: 0.75rem; background: #FFFFFF;
+        padding-inline-start: 2.85rem; padding-inline-end: 1rem;
+        font-size: 0.9375rem; font-family: inherit; color: #1E293B;
+        outline: none; -webkit-appearance: none; appearance: none;
+        transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
     }
-    .input-field:focus ~ .input-label,
-    .input-field:not(:placeholder-shown) ~ .input-label {
-        top: 0.2rem; font-size: 0.7rem; color: #2563EB; font-weight: 500;
+    .control::placeholder { color: #94A3B8; }
+    .control:hover:not(:focus) { border-color: #CBD5E1; }
+    .control:focus { border-color: #2563EB; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12); }
+
+    /* Leading icon */
+    .control-icon {
+        position: absolute; inset-inline-start: 0.95rem; top: 50%; transform: translateY(-50%);
+        color: #94A3B8; pointer-events: none; transition: color .2s ease; display: flex;
     }
+    .control:focus ~ .control-icon { color: #2563EB; }
+
+    /* Textarea */
+    textarea.control {
+        height: auto; min-height: 6.25rem; padding-top: 0.9rem; padding-bottom: 0.9rem;
+        line-height: 1.55; resize: vertical;
+    }
+    textarea.control ~ .control-icon { top: 1.45rem; transform: none; }
+
+    /* Select */
+    select.control { cursor: pointer; padding-inline-end: 2.75rem; }
+    select.control:invalid, select.control.placeholder-shown { color: #94A3B8; }
+    .select-caret {
+        position: absolute; inset-inline-end: 1rem; top: 50%; transform: translateY(-50%);
+        color: #64748B; pointer-events: none; display: flex;
+    }
+
+    /* Date: make the whole field open the native picker, hide default icon */
+    input[type="date"].control { cursor: pointer; }
+    input[type="date"].control::-webkit-calendar-picker-indicator {
+        position: absolute; inset: 0; width: 100%; height: 100%;
+        opacity: 0; cursor: pointer;
+    }
+    input[type="date"].control::-webkit-datetime-edit { padding: 0; }
+    input[type="date"].control:not(.has-value)::-webkit-datetime-edit { color: #94A3B8; }
+
+    /* Time preference chips */
+    .time-chip { cursor: pointer; display: block; }
+    .time-chip-face {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 0.15rem; height: 3.25rem; border: 1px solid #E2E8F0; border-radius: 0.75rem;
+        background: #FFFFFF; color: #64748B; font-size: 0.8125rem; font-weight: 500;
+        transition: all .2s ease; text-align: center; line-height: 1.1;
+    }
+    .time-chip-face small { font-size: 0.65rem; opacity: .75; font-weight: 400; }
+    .time-chip:hover .time-chip-face { border-color: #CBD5E1; color: #334155; }
+    .time-chip input:checked + .time-chip-face {
+        border-color: #2563EB; background: #EFF6FF; color: #1D4ED8; font-weight: 600;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+    }
+    .time-chip input:focus-visible + .time-chip-face { box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.20); }
+
+    /* Consent checkbox */
+    .consent-box {
+        width: 1.15rem; height: 1.15rem; flex: none; margin-top: 0.1rem;
+        border: 1px solid #CBD5E1; border-radius: 0.35rem; background: #FFFFFF;
+        display: flex; align-items: center; justify-content: center;
+        color: transparent; transition: all .2s ease;
+    }
+    .consent-input:checked + .consent-box { background: #2563EB; border-color: #2563EB; color: #FFFFFF; }
+    .consent-input:focus-visible + .consent-box { box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18); }
+
+    /* Validation states */
+    .field-error {
+        display: none; align-items: center; gap: 0.3rem;
+        font-size: 0.75rem; color: #DC2626; margin-top: 0.35rem;
+    }
+    .field.invalid .control { border-color: #FCA5A5; background: #FEF2F2; }
+    .field.invalid .control:focus { border-color: #EF4444; box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12); }
+    .field.invalid .control-icon { color: #EF4444; }
+    .field.invalid .field-error { display: flex; }
+
+    /* Submit button */
+    .submit-btn {
+        position: relative; width: 100%; height: 3.5rem; border-radius: 0.85rem;
+        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 55%, #06B6D4 190%);
+        color: #FFFFFF; font-weight: 600; font-size: 0.95rem;
+        display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+        box-shadow: 0 12px 24px -10px rgba(37, 99, 235, 0.55);
+        transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    }
+    .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 16px 30px -10px rgba(37, 99, 235, 0.6); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn[disabled] { opacity: .75; cursor: not-allowed; transform: none; }
+    .spinner {
+        width: 1.05rem; height: 1.05rem; border: 2px solid rgba(255,255,255,.35);
+        border-top-color: #FFFFFF; border-radius: 50%; animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Success pop */
+    @keyframes pop-in { 0% { opacity: 0; transform: scale(.94) translateY(8px); } 100% { opacity: 1; transform: none; } }
+    .pop-in { animation: pop-in .45s cubic-bezier(0.16, 1, 0.3, 1) both; }
 
     /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 8px; }
@@ -78,8 +175,8 @@ tailwind.config = {
     ::-webkit-scrollbar-thumb:hover { background: #2563EB; }
 
     /* RTL Support Helpers */
-    [dir="rtl"] .input-label { right: 0.75rem; left: auto; }
     [dir="rtl"] { font-family: 'Vazirmatn', sans-serif; }
+    [dir="rtl"] select.control { background-position: left 1rem center; }
     
     /* Animations */
     .reveal-on-scroll { opacity: 0; transform: translateY(20px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -392,74 +489,257 @@ tailwind.config = {
     </section>
 
     <!-- Appointment Form Section -->
-    <section id="book" class="py-24 bg-white relative">
-        <div class="max-w-4xl mx-auto px-6 relative z-10">
-            <div class="bg-surface rounded-3xl p-8 md:p-12 shadow-2xl shadow-primary/5 border border-border">
-                <div class="text-center mb-10">
-                    <h2 class="font-heading font-semibold text-3xl text-dark mb-2" data-i18n="form_title">Book Your Visit</h2>
-                    <p class="text-muted" data-i18n="form_subtitle">Fill out the form below and our coordinator will confirm your slot shortly.</p>
-                </div>
+    <section id="book" class="py-24 bg-white relative overflow-hidden">
+        <!-- Decorative background -->
+        <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+            <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-primary/5 blur-3xl"></div>
+            <div class="absolute -bottom-32 -right-20 w-[28rem] h-[28rem] rounded-full bg-accent/5 blur-3xl"></div>
+        </div>
 
-                <form id="bookingForm" class="space-y-6" onsubmit="event.preventDefault(); handleSubmit();">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Name -->
-                        <div class="input-group">
-                            <input type="text" id="name" class="input-field" placeholder=" " required="">
-                            <label for="name" class="input-label" data-i18n="lbl_name">Full Name</label>
-                        </div>
-                        <!-- Phone -->
-                        <div class="input-group">
-                            <input type="tel" id="phone" class="input-field" placeholder=" " required="">
-                            <label for="phone" class="input-label" data-i18n="lbl_phone">Phone Number</label>
-                        </div>
-                    </div>
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <!-- Section heading -->
+            <div class="text-center max-w-2xl mx-auto mb-12 reveal-on-scroll">
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surfaceHighlight text-primary text-xs font-semibold tracking-wide uppercase mb-4">
+                    <iconify-icon icon="solar:calendar-add-linear" width="14"></iconify-icon>
+                    <span data-i18n="form_badge">Appointments</span>
+                </span>
+                <h2 class="font-heading font-semibold text-3xl lg:text-4xl text-dark mb-3" data-i18n="form_title">Book Your Visit</h2>
+                <p class="text-muted leading-relaxed" data-i18n="form_subtitle">Fill out the form below and our coordinator will confirm your slot shortly.</p>
+            </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Email -->
-                        <div class="input-group">
-                            <input type="email" id="email" class="input-field" placeholder=" " required="">
-                            <label for="email" class="input-label" data-i18n="lbl_email">Email Address</label>
-                        </div>
-                        
-                        <!-- Custom Select Dropdown -->
-                        <div class="custom-select-wrapper relative" onclick="this.classList.toggle('open')">
-                            <div class="custom-select-trigger flex justify-between items-center p-3.5 border border-border rounded-lg bg-white cursor-pointer text-sm text-darkText">
-                                <span id="selected-treatment" data-i18n="lbl_select_treatment">Select Treatment</span>
-                                <iconify-icon icon="solar:alt-arrow-down-linear" class="text-primary" width="16"></iconify-icon>
+            <div class="bg-white rounded-3xl shadow-[0_24px_70px_-30px_rgba(15,23,42,0.25)] border border-border overflow-hidden reveal-on-scroll">
+                <div class="grid grid-cols-1 lg:grid-cols-5">
+
+                    <!-- ============ Left: reassurance panel ============ -->
+                    <aside class="lg:col-span-2 relative bg-dark text-white p-8 lg:p-10 flex flex-col justify-between overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-primaryDark via-dark to-dark"></div>
+                        <div class="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-accent/20 blur-3xl"></div>
+
+                        <div class="relative z-10">
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs font-medium mb-8 backdrop-blur">
+                                <span class="relative flex h-2 w-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+                                </span>
+                                <span data-i18n="form_side_badge">Same-week slots available</span>
                             </div>
-                            <div class="custom-select-options absolute top-full left-0 right-0 bg-white border border-border rounded-lg shadow-lg opacity-0 invisible z-20 transition-all transform -translate-y-2 mt-2">
-                                <div class="p-1">
-                                    <div class="custom-option p-2 hover:bg-surfaceHighlight hover:text-primary rounded cursor-pointer text-sm" onclick="selectOption('General Checkup')">General Checkup</div>
-                                    <div class="custom-option p-2 hover:bg-surfaceHighlight hover:text-primary rounded cursor-pointer text-sm" onclick="selectOption('Teeth Whitening')">Teeth Whitening</div>
-                                    <div class="custom-option p-2 hover:bg-surfaceHighlight hover:text-primary rounded cursor-pointer text-sm" onclick="selectOption('Dental Implant')">Dental Implant</div>
+
+                            <h3 class="font-heading font-semibold text-2xl leading-snug mb-3" data-i18n="form_side_title">A calm, careful visit — start to finish.</h3>
+                            <p class="text-sm text-white/65 leading-relaxed mb-8" data-i18n="form_side_desc">Tell us a little about what you need. Our coordinator reviews every request personally and confirms your time by phone.</p>
+
+                            <ul class="space-y-4 text-sm">
+                                <li class="flex items-start gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-accent flex-none"><iconify-icon icon="solar:clock-circle-linear" width="18"></iconify-icon></span>
+                                    <div>
+                                        <p class="font-medium text-white" data-i18n="form_perk_1_title">Confirmed within 24 hours</p>
+                                        <p class="text-white/55 text-xs mt-0.5" data-i18n="form_perk_1_desc">A real person calls you back, not an auto-reply.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-accent flex-none"><iconify-icon icon="solar:wallet-money-linear" width="18"></iconify-icon></span>
+                                    <div>
+                                        <p class="font-medium text-white" data-i18n="form_perk_2_title">No booking fee</p>
+                                        <p class="text-white/55 text-xs mt-0.5" data-i18n="form_perk_2_desc">Free reschedule or cancellation any time.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-accent flex-none"><iconify-icon icon="solar:lock-keyhole-minimalistic-linear" width="18"></iconify-icon></span>
+                                    <div>
+                                        <p class="font-medium text-white" data-i18n="form_perk_3_title">Private &amp; confidential</p>
+                                        <p class="text-white/55 text-xs mt-0.5" data-i18n="form_perk_3_desc">Your details are never shared with third parties.</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="relative z-10 mt-10 pt-6 border-t border-white/10">
+                            <p class="text-xs text-white/50 mb-2" data-i18n="form_side_call">Prefer to talk to someone?</p>
+                            <a href="tel:+15551234567" class="inline-flex items-center gap-2 font-heading font-semibold text-lg text-white hover:text-accent transition-colors">
+                                <iconify-icon icon="solar:phone-calling-linear" width="20" class="text-accent"></iconify-icon>
+                                +1 (555) 123-4567
+                            </a>
+                            <p class="text-xs text-white/40 mt-1"><span data-i18n="weekdays">Mon - Fri</span> · 9:00 AM – 8:00 PM</p>
+                        </div>
+                    </aside>
+
+                    <!-- ============ Right: the form ============ -->
+                    <div class="lg:col-span-3 p-8 lg:p-10">
+
+                        <form id="bookingForm" novalidate="" class="space-y-6">
+
+                            <!-- Honeypot: hidden from humans, catches spam bots -->
+                            <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;height:0;width:0" aria-hidden="true">
+
+                            <!-- Send failure banner -->
+                            <div id="sendError" class="hidden items-start gap-3 p-4 rounded-xl bg-red-50 border border-red-200 text-sm">
+                                <iconify-icon icon="solar:danger-triangle-bold" width="20" class="text-red-500 flex-none mt-0.5"></iconify-icon>
+                                <div>
+                                    <p class="font-semibold text-red-700 mb-0.5" data-i18n="err_send_title">We couldn't send your request.</p>
+                                    <p class="text-red-600/90 leading-relaxed" data-i18n="err_send_desc">Please check your connection and try again, or reach us directly:</p>
+                                    <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                                        <a href="tel:+15551234567" class="font-medium text-red-700 underline hover:no-underline">+1 (555) 123-4567</a>
+                                        <a id="mailtoFallback" href="#" class="font-medium text-red-700 underline hover:no-underline" data-i18n="err_send_mail">Send as email instead</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="input-group">
-                            <input type="date" id="date" class="input-field text-darkText" required="">
-                            <label for="date" class="input-label bg-surface px-1 -top-2.5 text-xs text-primary font-medium" data-i18n="lbl_date">Preferred Date</label>
-                        </div>
-                        <div class="input-group">
-                             <input type="text" class="input-field" placeholder=" " id="timeDisplay" readonly="" value="Morning">
-                             <label class="input-label" data-i18n="lbl_time">Time Preference</label>
-                        </div>
-                    </div>
+                            <!-- Row: Name + Phone -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div class="field" data-field="name">
+                                    <label class="field-label" for="name"><span data-i18n="lbl_name">Full Name</span><span class="req">*</span></label>
+                                    <div class="control-wrap">
+                                        <input type="text" id="name" name="name" class="control" autocomplete="name" placeholder="Jane Bennett" required="">
+                                        <span class="control-icon"><iconify-icon icon="solar:user-linear" width="18"></iconify-icon></span>
+                                    </div>
+                                    <p class="field-error"><iconify-icon icon="solar:danger-circle-bold" width="13"></iconify-icon><span data-i18n="err_name">Please enter your full name.</span></p>
+                                </div>
 
-                    <button type="submit" class="w-full bg-primary text-white font-medium py-4 rounded-lg shadow-lg shadow-primary/25 hover:bg-primaryDark hover:scale-[1.01] transition-all duration-300 flex items-center justify-center gap-2">
-                        <span data-i18n="btn_confirm">Confirm Appointment</span>
-                    </button>
-                </form>
+                                <div class="field" data-field="phone">
+                                    <label class="field-label" for="phone"><span data-i18n="lbl_phone">Phone Number</span><span class="req">*</span></label>
+                                    <div class="control-wrap">
+                                        <input type="tel" id="phone" name="phone" class="control" autocomplete="tel" placeholder="+1 (555) 000-0000" required="">
+                                        <span class="control-icon"><iconify-icon icon="solar:phone-linear" width="18"></iconify-icon></span>
+                                    </div>
+                                    <p class="field-error"><iconify-icon icon="solar:danger-circle-bold" width="13"></iconify-icon><span data-i18n="err_phone">Enter a valid phone number.</span></p>
+                                </div>
+                            </div>
 
-                <!-- Success Message -->
-                <div id="successMessage" class="hidden text-center py-12">
-                    <div class="w-16 h-16 bg-surfaceHighlight rounded-full flex items-center justify-center mx-auto mb-4 text-primary">
-                        <iconify-icon icon="solar:check-circle-bold" width="32"></iconify-icon>
+                            <!-- Row: Email -->
+                            <div class="field" data-field="email">
+                                <label class="field-label" for="email"><span data-i18n="lbl_email">Email Address</span><span class="req">*</span></label>
+                                <div class="control-wrap">
+                                    <input type="email" id="email" name="email" class="control" autocomplete="email" placeholder="you@example.com" required="">
+                                    <span class="control-icon"><iconify-icon icon="solar:letter-linear" width="18"></iconify-icon></span>
+                                </div>
+                                <p class="field-error"><iconify-icon icon="solar:danger-circle-bold" width="13"></iconify-icon><span data-i18n="err_email">Enter a valid email address.</span></p>
+                            </div>
+
+                            <!-- Row: Treatment + Date -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div class="field" data-field="treatment">
+                                    <label class="field-label" for="treatment"><span data-i18n="lbl_select_treatment">Select Treatment</span><span class="req">*</span></label>
+                                    <div class="control-wrap">
+                                        <select id="treatment" name="treatment" class="control placeholder-shown" required="">
+                                            <option value="" disabled="" selected="" data-i18n="opt_placeholder">Choose a service…</option>
+                                            <option value="general" data-i18n="opt_general">General Checkup &amp; Cleaning</option>
+                                            <option value="whitening" data-i18n="opt_whitening">Teeth Whitening</option>
+                                            <option value="implant" data-i18n="opt_implant">Dental Implant</option>
+                                            <option value="cosmetic" data-i18n="opt_cosmetic">Cosmetic / Veneers</option>
+                                            <option value="ortho" data-i18n="opt_ortho">Braces &amp; Aligners</option>
+                                            <option value="emergency" data-i18n="opt_emergency">Emergency / Tooth Pain</option>
+                                            <option value="other" data-i18n="opt_other">Something else</option>
+                                        </select>
+                                        <span class="control-icon"><iconify-icon icon="solar:stethoscope-linear" width="18"></iconify-icon></span>
+                                        <span class="select-caret"><iconify-icon icon="solar:alt-arrow-down-linear" width="16"></iconify-icon></span>
+                                    </div>
+                                    <p class="field-error"><iconify-icon icon="solar:danger-circle-bold" width="13"></iconify-icon><span data-i18n="err_treatment">Please choose a treatment.</span></p>
+                                </div>
+
+                                <div class="field" data-field="date">
+                                    <label class="field-label" for="date"><span data-i18n="lbl_date">Preferred Date</span><span class="req">*</span></label>
+                                    <div class="control-wrap">
+                                        <input type="date" id="date" name="date" class="control" required="">
+                                        <span class="control-icon"><iconify-icon icon="solar:calendar-linear" width="18"></iconify-icon></span>
+                                    </div>
+                                    <p class="field-error"><iconify-icon icon="solar:danger-circle-bold" width="13"></iconify-icon><span data-i18n="err_date">Pick a date from today onward.</span></p>
+                                </div>
+                            </div>
+
+                            <!-- Time preference -->
+                            <div class="field" data-field="time">
+                                <label class="field-label"><span data-i18n="lbl_time">Time Preference</span><span class="req">*</span></label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <label class="time-chip">
+                                        <input type="radio" name="time" value="morning" class="sr-only" checked="">
+                                        <span class="time-chip-face">
+                                            <span data-i18n="time_morning">Morning</span>
+                                            <small>9 – 12</small>
+                                        </span>
+                                    </label>
+                                    <label class="time-chip">
+                                        <input type="radio" name="time" value="afternoon" class="sr-only">
+                                        <span class="time-chip-face">
+                                            <span data-i18n="time_afternoon">Afternoon</span>
+                                            <small>12 – 5</small>
+                                        </span>
+                                    </label>
+                                    <label class="time-chip">
+                                        <input type="radio" name="time" value="evening" class="sr-only">
+                                        <span class="time-chip-face">
+                                            <span data-i18n="time_evening">Evening</span>
+                                            <small>5 – 8</small>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Notes -->
+                            <div class="field" data-field="notes">
+                                <label class="field-label" for="notes">
+                                    <span data-i18n="lbl_notes">Notes</span>
+                                    <span class="font-normal text-muted" data-i18n="lbl_optional">(optional)</span>
+                                </label>
+                                <div class="control-wrap">
+                                    <textarea id="notes" name="notes" rows="3" maxlength="400" class="control" data-i18n-placeholder="ph_notes" placeholder="Anything we should know before your visit?"></textarea>
+                                    <span class="control-icon"><iconify-icon icon="solar:chat-square-like-linear" width="18"></iconify-icon></span>
+                                </div>
+                                <p class="text-xs text-muted mt-1.5 text-end"><span id="notesCount">0</span>/400</p>
+                            </div>
+
+                            <!-- Consent -->
+                            <div class="field" data-field="consent">
+                                <label class="flex items-start gap-3 cursor-pointer group">
+                                    <input type="checkbox" id="consent" name="consent" class="sr-only consent-input" required="">
+                                    <span class="consent-box"><iconify-icon icon="solar:check-read-linear" width="12"></iconify-icon></span>
+                                    <span class="text-xs text-muted leading-relaxed group-hover:text-darkText transition-colors" data-i18n="lbl_consent">I agree to be contacted about this appointment and accept the clinic's privacy policy.</span>
+                                </label>
+                                <p class="field-error"><iconify-icon icon="solar:danger-circle-bold" width="13"></iconify-icon><span data-i18n="err_consent">Please accept to continue.</span></p>
+                            </div>
+
+                            <!-- Submit -->
+                            <div class="pt-1">
+                                <button type="submit" id="submitBtn" class="submit-btn">
+                                    <span id="submitLabel" data-i18n="btn_confirm">Confirm Appointment</span>
+                                    <iconify-icon id="submitArrow" icon="solar:arrow-right-linear" width="18" class="rtl:rotate-180"></iconify-icon>
+                                </button>
+                                <p class="flex items-center justify-center gap-1.5 text-xs text-muted mt-4">
+                                    <iconify-icon icon="solar:shield-check-linear" width="14" class="text-primary"></iconify-icon>
+                                    <span data-i18n="form_secure">Secure &amp; confidential — no payment required to book.</span>
+                                </p>
+                            </div>
+                        </form>
+
+                        <!-- Success Message -->
+                        <div id="successMessage" class="hidden text-center py-8">
+                            <div class="w-16 h-16 bg-surfaceHighlight rounded-2xl flex items-center justify-center mx-auto mb-5 text-primary">
+                                <iconify-icon icon="solar:check-circle-bold" width="34"></iconify-icon>
+                            </div>
+                            <h3 class="text-2xl font-heading font-semibold text-dark mb-2" data-i18n="msg_success_title">Thank you!</h3>
+                            <p class="text-muted text-sm max-w-sm mx-auto leading-relaxed" data-i18n="msg_success_desc">Our clinic coordinator will contact you shortly to confirm your appointment.</p>
+
+                            <!-- Recap -->
+                            <div class="mt-7 text-start bg-surface border border-border rounded-2xl p-5 max-w-sm mx-auto space-y-3">
+                                <div class="flex items-center justify-between gap-4 text-sm">
+                                    <span class="text-muted flex items-center gap-2"><iconify-icon icon="solar:stethoscope-linear" width="16"></iconify-icon><span data-i18n="recap_treatment">Treatment</span></span>
+                                    <span class="font-medium text-dark text-end" id="recapTreatment">—</span>
+                                </div>
+                                <div class="flex items-center justify-between gap-4 text-sm border-t border-border pt-3">
+                                    <span class="text-muted flex items-center gap-2"><iconify-icon icon="solar:calendar-linear" width="16"></iconify-icon><span data-i18n="recap_when">When</span></span>
+                                    <span class="font-medium text-dark text-end" id="recapWhen">—</span>
+                                </div>
+                                <div class="flex items-center justify-between gap-4 text-sm border-t border-border pt-3">
+                                    <span class="text-muted flex items-center gap-2"><iconify-icon icon="solar:phone-linear" width="16"></iconify-icon><span data-i18n="recap_contact">Contact</span></span>
+                                    <span class="font-medium text-dark text-end" id="recapContact">—</span>
+                                </div>
+                            </div>
+
+                            <button type="button" onclick="resetBooking()" class="mt-6 text-sm font-medium text-primary hover:text-primaryDark transition-colors inline-flex items-center gap-1.5">
+                                <iconify-icon icon="solar:restart-linear" width="15"></iconify-icon>
+                                <span data-i18n="btn_another">Book another appointment</span>
+                            </button>
+                        </div>
+
                     </div>
-                    <h3 class="text-2xl font-heading font-semibold text-dark mb-2" data-i18n="msg_success_title">Thank you!</h3>
-                    <p class="text-muted" data-i18n="msg_success_desc">Our clinic coordinator will contact you shortly to confirm your appointment.</p>
                 </div>
             </div>
         </div>
@@ -526,7 +806,7 @@ tailwind.config = {
 
     <script>
         // Localization Data
-        const translations = {
+        const translations = window.translations = {
             en: {
                 nav_home: "Home", nav_about: "About", nav_services: "Services", nav_stories: "Stories", btn_book: "Book Appointment",
                 hero_badge: "Accepting New Patients", hero_title_1: "Advanced Dental Care", hero_title_2: "Designed for Comfort",
@@ -551,6 +831,27 @@ tailwind.config = {
                 form_title: "Book Your Visit", form_subtitle: "Fill out the form below and our coordinator will confirm your slot shortly.",
                 lbl_name: "Full Name", lbl_phone: "Phone Number", lbl_email: "Email Address", lbl_select_treatment: "Select Treatment",
                 lbl_date: "Preferred Date", lbl_time: "Time Preference", btn_confirm: "Confirm Appointment",
+                form_badge: "Appointments", btn_sending: "Sending\u2026",
+                form_side_badge: "Same-week slots available",
+                form_side_title: "A calm, careful visit \u2014 start to finish.",
+                form_side_desc: "Tell us a little about what you need. Our coordinator reviews every request personally and confirms your time by phone.",
+                form_perk_1_title: "Confirmed within 24 hours", form_perk_1_desc: "A real person calls you back, not an auto-reply.",
+                form_perk_2_title: "No booking fee", form_perk_2_desc: "Free reschedule or cancellation any time.",
+                form_perk_3_title: "Private & confidential", form_perk_3_desc: "Your details are never shared with third parties.",
+                form_side_call: "Prefer to talk to someone?",
+                opt_placeholder: "Choose a service\u2026", opt_general: "General Checkup & Cleaning", opt_whitening: "Teeth Whitening",
+                opt_implant: "Dental Implant", opt_cosmetic: "Cosmetic / Veneers", opt_ortho: "Braces & Aligners",
+                opt_emergency: "Emergency / Tooth Pain", opt_other: "Something else",
+                time_morning: "Morning", time_afternoon: "Afternoon", time_evening: "Evening",
+                lbl_notes: "Notes", lbl_optional: "(optional)", ph_notes: "Anything we should know before your visit?",
+                lbl_consent: "I agree to be contacted about this appointment and accept the clinic's privacy policy.",
+                form_secure: "Secure & confidential \u2014 no payment required to book.",
+                err_name: "Please enter your full name.", err_phone: "Enter a valid phone number.", err_email: "Enter a valid email address.",
+                err_treatment: "Please choose a treatment.", err_date: "Pick a date from today onward.", err_consent: "Please accept to continue.",
+                recap_treatment: "Treatment", recap_when: "When", recap_contact: "Contact", btn_another: "Book another appointment",
+                err_send_title: "We couldn't send your request.",
+                err_send_desc: "Please check your connection and try again, or reach us directly:",
+                err_send_mail: "Send as email instead",
                 msg_success_title: "Thank you!", msg_success_desc: "Our clinic coordinator will contact you shortly to confirm your appointment.",
                 footer_desc: "Providing premium dental care with a focus on hygiene, technology, and patient comfort since 2012.",
                 footer_contact: "Contact Us", footer_hours: "Opening Hours", weekdays: "Mon - Fri", sunday: "Sunday", closed: "Closed"
@@ -579,6 +880,27 @@ tailwind.config = {
                 form_title: "رزرو وقت ملاقات", form_subtitle: "فرم زیر را پر کنید تا هماهنگ‌کننده ما به زودی با شما تماس بگیرد.",
                 lbl_name: "نام و نام خانوادگی", lbl_phone: "شماره تماس", lbl_email: "آدرس ایمیل", lbl_select_treatment: "انتخاب درمان",
                 lbl_date: "تاریخ ترجیحی", lbl_time: "زمان ترجیحی", btn_confirm: "تایید نوبت",
+                form_badge: "نوبت‌دهی", btn_sending: "در حال ارسال\u2026",
+                form_side_badge: "نوبت‌های همین هفته موجود است",
+                form_side_title: "یک مراجعه آرام و دقیق، از ابتدا تا انتها.",
+                form_side_desc: "کمی درباره نیاز خود به ما بگویید. هماهنگ‌کننده ما هر درخواست را شخصاً بررسی کرده و زمان شما را تلفنی تایید می‌کند.",
+                form_perk_1_title: "تایید در کمتر از ۲۴ ساعت", form_perk_1_desc: "یک همکار واقعی با شما تماس می‌گیرد، نه پاسخ خودکار.",
+                form_perk_2_title: "بدون هزینه رزرو", form_perk_2_desc: "تغییر یا لغو نوبت در هر زمان، رایگان است.",
+                form_perk_3_title: "خصوصی و محرمانه", form_perk_3_desc: "اطلاعات شما هرگز با اشخاص ثالث به اشتراک گذاشته نمی‌شود.",
+                form_side_call: "ترجیح می‌دهید صحبت کنید؟",
+                opt_placeholder: "یک خدمت را انتخاب کنید\u2026", opt_general: "معاینه عمومی و جرم‌گیری", opt_whitening: "سفید کردن دندان",
+                opt_implant: "ایمپلنت دندان", opt_cosmetic: "زیبایی / لمینت", opt_ortho: "ارتودنسی و پلاک نامرئی",
+                opt_emergency: "اورژانس / درد دندان", opt_other: "موارد دیگر",
+                time_morning: "صبح", time_afternoon: "بعدازظهر", time_evening: "عصر",
+                lbl_notes: "توضیحات", lbl_optional: "(اختیاری)", ph_notes: "نکته‌ای هست که پیش از مراجعه بدانیم؟",
+                lbl_consent: "موافقم که درباره این نوبت با من تماس گرفته شود و سیاست حریم خصوصی کلینیک را می‌پذیرم.",
+                form_secure: "امن و محرمانه \u2014 برای رزرو نیازی به پرداخت نیست.",
+                err_name: "لطفاً نام و نام خانوادگی خود را وارد کنید.", err_phone: "یک شماره تماس معتبر وارد کنید.", err_email: "یک ایمیل معتبر وارد کنید.",
+                err_treatment: "لطفاً یک درمان انتخاب کنید.", err_date: "تاریخی از امروز به بعد انتخاب کنید.", err_consent: "برای ادامه لطفاً بپذیرید.",
+                recap_treatment: "درمان", recap_when: "زمان", recap_contact: "تماس", btn_another: "رزرو نوبت دیگر",
+                err_send_title: "ارسال درخواست شما ممکن نشد.",
+                err_send_desc: "لطفاً اتصال خود را بررسی و دوباره تلاش کنید، یا مستقیماً با ما تماس بگیرید:",
+                err_send_mail: "ارسال از طریق ایمیل",
                 msg_success_title: "سپاسگزاریم!", msg_success_desc: "هماهنگ‌کننده کلینیک ما برای تایید نوبت به زودی با شما تماس خواهد گرفت.",
                 footer_desc: "ارائه مراقبت‌های دندانپزشکی برتر با تمرکز بر بهداشت، تکنولوژی و راحتی بیمار از سال ۲۰۱۲.",
                 footer_contact: "تماس با ما", footer_hours: "ساعات کاری", weekdays: "شنبه - چهارشنبه", sunday: "جمعه", closed: "تعطیل"
@@ -607,56 +929,285 @@ tailwind.config = {
                 form_title: "خپله لیدنه بک کړئ", form_subtitle: "لاندې فورمه ډکه کړئ او زموږ همغږي کونکی به ژر تر ژره ستاسو وخت تایید کړي.",
                 lbl_name: "پوره نوم", lbl_phone: "د تلیفون شمیره", lbl_email: "بریښنالیک پته", lbl_select_treatment: "درملنه وټاکئ",
                 lbl_date: "غوره نیټه", lbl_time: "غوره وخت", btn_confirm: "نوبت تایید کړئ",
+                form_badge: "نوبتونه", btn_sending: "لیږل کیږي\u2026",
+                form_side_badge: "د همدې اوونۍ وختونه شته",
+                form_side_title: "یوه آرامه او دقیقه لیدنه، له پیله تر پایه.",
+                form_side_desc: "موږ ته لږ ووایاست چې څه ته اړتیا لرئ. زموږ همغږي کونکی هره غوښتنه په شخصي ډول ګوري او ستاسو وخت په تلیفون تاییدوي.",
+                form_perk_1_title: "په ۲۴ ساعتونو کې تایید", form_perk_1_desc: "یو ریښتینی کس تاسو ته زنګ وهي، نه خودکار ځواب.",
+                form_perk_2_title: "د بکینګ فیس نشته", form_perk_2_desc: "هر وخت وړیا بدلون یا لغوه کول.",
+                form_perk_3_title: "محرم او خوندي", form_perk_3_desc: "ستاسو معلومات هیڅکله له بل چا سره نه شریکیږي.",
+                form_side_call: "غوره ګڼئ چې خبرې وکړئ؟",
+                opt_placeholder: "یو خدمت وټاکئ\u2026", opt_general: "عمومي معاینه او پاکول", opt_whitening: "د غاښونو سپینول",
+                opt_implant: "د غاښ امپلانټ", opt_cosmetic: "کاسمیټیک / وینیرز", opt_ortho: "بریسونه او الاینرونه",
+                opt_emergency: "بیړني / د غاښ درد", opt_other: "بل څه",
+                time_morning: "سهار", time_afternoon: "غرمه", time_evening: "ماښام",
+                lbl_notes: "یادښتونه", lbl_optional: "(اختیاري)", ph_notes: "ایا داسې څه شته چې له لیدنې مخکې یې وپوهیږو؟",
+                lbl_consent: "زه منم چې د دې نوبت په اړه له ما سره اړیکه ونیول شي او د کلینیک د محرمیت پالیسي منم.",
+                form_secure: "خوندي او محرم \u2014 د بکینګ لپاره تادیې ته اړتیا نشته.",
+                err_name: "مهرباني وکړئ خپل پوره نوم ولیکئ.", err_phone: "یوه سمه د تلیفون شمیره ولیکئ.", err_email: "یو سم بریښنالیک ولیکئ.",
+                err_treatment: "مهرباني وکړئ یوه درملنه وټاکئ.", err_date: "له نن څخه وروسته نیټه وټاکئ.", err_consent: "د دوام لپاره مهرباني وکړئ ومنئ.",
+                recap_treatment: "درملنه", recap_when: "کله", recap_contact: "اړیکه", btn_another: "بل نوبت بک کړئ",
+                err_send_title: "ستاسو غوښتنه ونه لیږل شوه.",
+                err_send_desc: "مهرباني وکړئ خپله اړیکه وګورئ او بیا هڅه وکړئ، یا مستقیماً موږ سره اړیکه ونیسئ:",
+                err_send_mail: "د بریښنالیک له لارې یې ولیږئ",
                 msg_success_title: "مننه!", msg_success_desc: "زموږ د کلینیک همغږي کونکی به ژر تر ژره تاسو سره اړیکه ونیسي ترڅو ستاسو نوبت تایید کړي.",
                 footer_desc: "د ۲۰۱۲ راهیسې د حفظ الصحې، ټیکنالوژۍ، او د ناروغ آرامۍ تمرکز سره د غاښونو غوره پاملرنې چمتو کول.",
                 footer_contact: "موږ سره اړیکه ونیسئ", footer_hours: "د خلاصیدو ساعتونه", weekdays: "شنبه - چهارشنبه", sunday: "جمعه", closed: "تړل شوی"
             }
         };
 
+        let currentLang = 'en';
+
         function setLanguage(lang) {
+            if (!translations[lang]) return;
+            currentLang = lang;
+
             const root = document.getElementById('html-root');
             const currentLangSpan = document.getElementById('current-lang');
-            
-            // Set Language Label
-            currentLangSpan.innerText = lang.toUpperCase();
 
-            // Handle Direction and Font
-            if (lang === 'fa' || lang === 'ps') {
-                root.setAttribute('dir', 'rtl');
-            } else {
-                root.setAttribute('dir', 'ltr');
-            }
+            // Set Language Label
+            currentLangSpan.textContent = lang.toUpperCase();
+
+            // Handle Direction, Font and lang attribute
+            root.setAttribute('lang', lang);
+            root.setAttribute('dir', (lang === 'fa' || lang === 'ps') ? 'rtl' : 'ltr');
 
             // Update Text Content
             document.querySelectorAll('[data-i18n]').forEach(element => {
                 const key = element.getAttribute('data-i18n');
                 if (translations[lang][key]) {
-                    element.innerText = translations[lang][key];
+                    element.textContent = translations[lang][key];
+                }
+            });
+
+            // Update placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                if (translations[lang][key]) {
+                    element.setAttribute('placeholder', translations[lang][key]);
                 }
             });
         }
 
-        // Form Handling
-        function selectOption(value) {
-            document.getElementById('selected-treatment').innerText = value;
-            document.getElementById('selected-treatment').classList.add('text-dark');
-            const dropdown = document.querySelector('.custom-select-wrapper.open');
-            if(dropdown) dropdown.classList.remove('open');
-        }
-
-        function handleSubmit() {
+        // ============================================
+        //  Booking Form
+        // ============================================
+        (function initBookingForm() {
             const form = document.getElementById('bookingForm');
-            const successMsg = document.getElementById('successMessage');
-            const btn = form.querySelector('button');
-            const originalText = btn.innerHTML;
-            
-            btn.innerHTML = '...Processing'; // Simple loading state
-            
-            setTimeout(() => {
-                form.classList.add('hidden');
-                successMsg.classList.remove('hidden');
-                btn.innerHTML = originalText;
-            }, 1000);
+            if (!form) return;
+
+            const dateInput  = document.getElementById('date');
+            const treatment  = document.getElementById('treatment');
+            const notes      = document.getElementById('notes');
+            const notesCount = document.getElementById('notesCount');
+            const submitBtn  = document.getElementById('submitBtn');
+
+            // Minimum bookable date = today
+            const today = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            dateInput.min = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
+            dateInput.addEventListener('change', () => {
+                dateInput.classList.toggle('has-value', !!dateInput.value);
+            });
+
+            // Grey-out the select until a real option is chosen
+            treatment.addEventListener('change', () => {
+                treatment.classList.toggle('placeholder-shown', !treatment.value);
+            });
+
+            // Live character counter
+            notes.addEventListener('input', () => { notesCount.textContent = notes.value.length; });
+
+            // ---- Validation ----
+            const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+            const setValid = (name, ok) => {
+                const field = form.querySelector(`[data-field="${name}"]`);
+                if (field) field.classList.toggle('invalid', !ok);
+                return ok;
+            };
+
+            const checks = {
+                name:      () => document.getElementById('name').value.trim().length >= 2,
+                phone:     () => document.getElementById('phone').value.replace(/[^0-9]/g, '').length >= 7,
+                email:     () => EMAIL_RE.test(document.getElementById('email').value.trim()),
+                treatment: () => !!treatment.value,
+                date:      () => !!dateInput.value && dateInput.value >= dateInput.min,
+                consent:   () => document.getElementById('consent').checked
+            };
+
+            // Re-validate a field once it has been touched
+            Object.keys(checks).forEach(name => {
+                const field = form.querySelector(`[data-field="${name}"]`);
+                const input = field && field.querySelector('input, select, textarea');
+                if (!input) return;
+                const revalidate = () => {
+                    if (field.classList.contains('invalid')) setValid(name, checks[name]());
+                };
+                input.addEventListener('input', revalidate);
+                input.addEventListener('change', revalidate);
+                input.addEventListener('blur', () => setValid(name, checks[name]()));
+            });
+
+            function labelFor(select) {
+                const opt = select.options[select.selectedIndex];
+                return opt && opt.value ? opt.textContent.trim() : '—';
+            }
+
+            function formatWhen() {
+                const t = (form.querySelector('input[name="time"]:checked') || {}).value || '';
+                const timeLabel = form.querySelector(`input[name="time"][value="${t}"]`)
+                    ?.closest('.time-chip')?.querySelector('span[data-i18n]')?.textContent.trim() || '';
+                if (!dateInput.value) return timeLabel;
+                const [y, m, d] = dateInput.value.split('-').map(Number);
+                const dt = new Date(y, m - 1, d);
+                const lang = document.getElementById('html-root').getAttribute('lang') || 'en';
+                let pretty;
+                try {
+                    pretty = dt.toLocaleDateString(lang, { weekday: 'short', month: 'short', day: 'numeric' });
+                } catch (e) {
+                    pretty = dateInput.value;
+                }
+                return `${pretty} · ${timeLabel}`;
+            }
+
+            // Where submissions are delivered
+            const CLINIC_EMAIL = 'farhadyousafi1994@gmail.com';
+            const ENDPOINT = 'https://formsubmit.co/ajax/' + CLINIC_EMAIL;
+
+            function buildPayload() {
+                const timeInput = form.querySelector('input[name="time"]:checked');
+                const timeLabel = timeInput
+                    ? timeInput.closest('.time-chip').querySelector('span[data-i18n]').textContent.trim()
+                    : '';
+                const patientName = document.getElementById('name').value.trim();
+
+                return {
+                    // FormSubmit control fields
+                    _subject: `New appointment request — ${patientName} (${labelFor(treatment)})`,
+                    _template: 'table',
+                    _captcha: 'false',
+                    _replyto: document.getElementById('email').value.trim(),
+                    _honey: form.querySelector('input[name="_honey"]').value,
+
+                    // Submitted data
+                    'Patient Name': patientName,
+                    'Phone': document.getElementById('phone').value.trim(),
+                    'Email': document.getElementById('email').value.trim(),
+                    'Treatment': labelFor(treatment),
+                    'Preferred Date': dateInput.value,
+                    'Time Preference': timeLabel,
+                    'Notes': notes.value.trim() || '—',
+                    'Submitted At': new Date().toLocaleString(),
+                    'Page Language': currentLang.toUpperCase()
+                };
+            }
+
+            function mailtoHref(payload) {
+                const body = Object.keys(payload)
+                    .filter(k => k.charAt(0) !== '_')
+                    .map(k => `${k}: ${payload[k]}`)
+                    .join('\n');
+                return `mailto:${CLINIC_EMAIL}?subject=${encodeURIComponent(payload._subject)}`
+                     + `&body=${encodeURIComponent(body)}`;
+            }
+
+            function setSending(isSending) {
+                const label = document.getElementById('submitLabel');
+                const arrow = document.getElementById('submitArrow');
+                submitBtn.disabled = isSending;
+                arrow.classList.toggle('hidden', isSending);
+
+                const existing = document.getElementById('submitSpinner');
+                if (isSending && !existing) {
+                    label.insertAdjacentHTML('beforebegin', '<span class="spinner" id="submitSpinner"></span>');
+                } else if (!isSending && existing) {
+                    existing.remove();
+                }
+
+                const t = translations[currentLang] || translations.en;
+                label.textContent = isSending
+                    ? (t.btn_sending || 'Sending…')
+                    : (t.btn_confirm || 'Confirm Appointment');
+            }
+
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                let firstInvalid = null;
+                Object.keys(checks).forEach(name => {
+                    const ok = setValid(name, checks[name]());
+                    if (!ok && !firstInvalid) firstInvalid = name;
+                });
+
+                if (firstInvalid) {
+                    const field = form.querySelector(`[data-field="${firstInvalid}"]`);
+                    field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const input = field.querySelector('input:not(.sr-only), select, textarea')
+                               || field.querySelector('input');
+                    if (input) input.focus({ preventScroll: true });
+                    return;
+                }
+
+                const banner = document.getElementById('sendError');
+                banner.classList.add('hidden');
+                banner.classList.remove('flex');
+                setSending(true);
+
+                const payload = buildPayload();
+
+                try {
+                    const response = await fetch(ENDPOINT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json().catch(() => ({}));
+
+                    // FormSubmit returns success as the string "true"
+                    if (!response.ok || String(result.success) === 'false') {
+                        throw new Error(result.message || `Request failed (${response.status})`);
+                    }
+
+                    // Fill the confirmation recap
+                    document.getElementById('recapTreatment').textContent = payload['Treatment'];
+                    document.getElementById('recapWhen').textContent = formatWhen();
+                    document.getElementById('recapContact').textContent = payload['Phone'];
+
+                    form.classList.add('hidden');
+                    const success = document.getElementById('successMessage');
+                    success.classList.remove('hidden');
+                    success.classList.add('pop-in');
+                    success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                } catch (err) {
+                    console.error('Booking submission failed:', err);
+                    document.getElementById('mailtoFallback').href = mailtoHref(payload);
+                    banner.classList.remove('hidden');
+                    banner.classList.add('flex');
+                    banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } finally {
+                    setSending(false);
+                }
+            });
+
+        })();
+
+        function resetBooking() {
+            const form = document.getElementById('bookingForm');
+            const success = document.getElementById('successMessage');
+            form.reset();
+            form.querySelectorAll('.field.invalid').forEach(f => f.classList.remove('invalid'));
+            document.getElementById('treatment').classList.add('placeholder-shown');
+            document.getElementById('date').classList.remove('has-value');
+            document.getElementById('notesCount').textContent = '0';
+            const banner = document.getElementById('sendError');
+            banner.classList.add('hidden');
+            banner.classList.remove('flex');
+            success.classList.add('hidden');
+            success.classList.remove('pop-in');
+            form.classList.remove('hidden');
+            document.getElementById('book').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         // Reveal Animation
