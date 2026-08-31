@@ -559,6 +559,10 @@ tailwind.config = {
                                 +1 (555) 123-4567
                             </a>
                             <p class="text-xs text-white/40 mt-1"><span data-i18n="weekdays">Mon - Fri</span> · 9:00 AM – 8:00 PM</p>
+                            <a href="mailto:farhadyousafi1994@gmail.com?subject=Appointment%20request" class="inline-flex items-center gap-2 text-xs text-white/60 hover:text-accent transition-colors mt-3 break-all">
+                                <iconify-icon icon="solar:letter-linear" width="14" class="text-accent"></iconify-icon>
+                                farhadyousafi1994@gmail.com
+                            </a>
                         </div>
                     </aside>
 
@@ -579,6 +583,7 @@ tailwind.config = {
                                     <p id="sendErrorDetail" class="hidden mt-1.5 text-[11px] leading-relaxed text-red-500/90 break-words"></p>
                                     <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
                                         <a href="tel:+15551234567" class="font-medium text-red-700 underline hover:no-underline">+1 (555) 123-4567</a>
+                                        <a href="mailto:farhadyousafi1994@gmail.com?subject=Appointment%20request" class="font-medium text-red-700 underline hover:no-underline break-all">farhadyousafi1994@gmail.com</a>
                                         <a id="mailtoFallback" href="#" class="font-medium text-red-700 underline hover:no-underline" data-i18n="err_send_mail">Send as email instead</a>
                                         <button type="button" id="retryBtn" class="font-medium text-red-700 underline hover:no-underline" data-i18n="btn_retry">Try again</button>
                                     </div>
@@ -785,7 +790,11 @@ tailwind.config = {
                         </li>
                         <li class="flex items-center gap-3 group cursor-pointer">
                             <iconify-icon icon="solar:phone-calling-linear" class="text-accent" width="18"></iconify-icon>
-                            <a href="tel:+1234567890" class="hover:text-accent transition-colors">+1 (555) 123-4567</a>
+                            <a href="tel:+15551234567" class="hover:text-accent transition-colors">+1 (555) 123-4567</a>
+                        </li>
+                        <li class="flex items-center gap-3 group cursor-pointer">
+                            <iconify-icon icon="solar:letter-linear" class="text-accent" width="18"></iconify-icon>
+                            <a href="mailto:farhadyousafi1994@gmail.com?subject=Appointment%20request" class="hover:text-accent transition-colors break-all">farhadyousafi1994@gmail.com</a>
                         </li>
                     </ul>
                 </div>
@@ -1094,20 +1103,32 @@ tailwind.config = {
             }
 
             // ============================================================
-            //  Where submissions are delivered
+            //  DELIVERY ADDRESS — every booking request lands here
             // ============================================================
-            // Point these at your own endpoint (serverless function, CRM
-            // webhook, …) and everything below keeps working: any 2xx JSON
-            // response that does not contain `success: false` is treated as
-            // delivered.
+            // All three routes the form can take are built from this address:
+            //   1. AJAX_ENDPOINT    — the JSON API (needs CORS)
+            //   2. CLASSIC_ENDPOINT — the no-CORS fallback form POST
+            //   3. mailtoHref()     — the "send as email instead" link
+            // Changing CLINIC_EMAIL here is therefore enough; nothing else
+            // needs to be touched.
+            //
             // NOTE (formsubmit.co): a brand-new address must be activated once
-            // — click the link in the activation email they send — before the
-            // service will accept submissions. Until then it refuses them.
+            // — click the link in the activation email they send to this inbox
+            // — before the service accepts submissions. Until then it refuses
+            // them, and the form will say so instead of pretending to succeed.
+            //
+            // To deliver somewhere else entirely (your own serverless function,
+            // a CRM webhook, …), replace the two endpoints below. Any 2xx JSON
+            // response without `success: false` counts as delivered.
             const CLINIC_EMAIL     = 'farhadyousafi1994@gmail.com';
             const AJAX_ENDPOINT    = 'https://formsubmit.co/ajax/' + CLINIC_EMAIL; // JSON API — needs CORS
             const CLASSIC_ENDPOINT = 'https://formsubmit.co/' + CLINIC_EMAIL;      // plain form POST — no CORS needed
             const REQUEST_TIMEOUT  = 12000;
             const IFRAME_TIMEOUT   = 9000;
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(CLINIC_EMAIL)) {
+                console.warn('Booking form: CLINIC_EMAIL is not a valid address — submissions cannot be delivered.');
+            }
 
             // Underscore-prefixed keys that are meaningful to the form service
             const CONTROL_FIELDS = ['_subject', '_captcha', '_template', '_replyto', '_next'];
