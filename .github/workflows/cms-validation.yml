@@ -70,7 +70,7 @@ jobs:
           cp .env.example .env
           php artisan key:generate
           set +e
-          php artisan test --configuration=phpunit.mysql.xml --log-junit /tmp/laravel-junit.xml 2>&1 | tee /tmp/laravel-tests.log
+          php vendor/bin/phpunit --configuration phpunit.mysql.xml --log-junit /tmp/laravel-junit.xml 2>&1 | tee /tmp/laravel-tests.log
           result=${PIPESTATUS[0]}
           python ../scripts/ci-test-summary.py /tmp/laravel-junit.xml
           if [ "$result" -ne 0 ]; then

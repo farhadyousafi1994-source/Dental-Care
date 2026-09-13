@@ -147,7 +147,7 @@ cd backend
 php artisan test                # Fast SQLite feature suite; dependencies required
 # CAUTION: RefreshDatabase destroys data in the configured test database.
 # Create EMPTY website_cms_test in phpMyAdmin before using this configuration:
-php artisan test --configuration=phpunit.mysql.xml
+php vendor/bin/phpunit --configuration phpunit.mysql.xml
 ```
 
 The frontend tests/build and preview integration tests passed in this workspace. Custom PHP code passed PHP WASM syntax checks. **Composer installation, Laravel feature-test execution, and MySQL migrations were not run here.** The backend test suite is supplied, not claimed to have passed. See [validation](docs/VALIDATION.md).

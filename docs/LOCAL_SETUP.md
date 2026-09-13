@@ -110,7 +110,7 @@ For an Arena-hosted service, bind to `0.0.0.0`; `127.0.0.1` above intentionally 
 
 ```bash
 cd backend
-php artisan test --configuration=phpunit.mysql.xml
+php vendor/bin/phpunit --configuration phpunit.mysql.xml
 ```
 
 **Warning:** the feature suite uses RefreshDatabase and destroys/rebuilds the configured test database. `phpunit.mysql.xml` forces `website_cms_test`; do not change it to the application database. It inherits your connection credentials from the environment. An empty bootstrap admin password is forced during tests to keep fixtures deterministic.
