@@ -57,10 +57,11 @@ jobs:
           composer install --prefer-dist --no-interaction --no-progress 2>&1 | tee /tmp/composer-install.log
           result=${PIPESTATUS[0]}
           if [ "$result" -ne 0 ]; then
-            while IFS= read -r line; do
-              line="${line//'%'/'%25'}"
-              printf '::error title=Composer install::%s\n' "$line"
-            done < <(tail -60 /tmp/composer-install.log)
+            message="$(tail -60 /tmp/composer-install.log)"
+            message="${message//'%'/'%25'}"
+            message="${message//$'\n'/'%0A'}"
+            message="${message//$'\r'/'%0D'}"
+            printf '::error title=Composer install::%s\n' "$message"
           fi
           exit "$result"
       - name: Test Laravel against MySQL
@@ -72,10 +73,11 @@ jobs:
           php artisan test --configuration=phpunit.mysql.xml 2>&1 | tee /tmp/laravel-tests.log
           result=${PIPESTATUS[0]}
           if [ "$result" -ne 0 ]; then
-            while IFS= read -r line; do
-              line="${line//'%'/'%25'}"
-              printf '::error title=Laravel tests::%s\n' "$line"
-            done < <(tail -180 /tmp/laravel-tests.log)
+            message="$(tail -180 /tmp/laravel-tests.log)"
+            message="${message//'%'/'%25'}"
+            message="${message//$'\n'/'%0A'}"
+            message="${message//$'\r'/'%0D'}"
+            printf '::error title=Laravel tests::%s\n' "$message"
           fi
           exit "$result"
       - name: Retain first resolved dependency lockfile for review
