@@ -16,7 +16,7 @@ Artisan::command('inspire', function () {
             \Illuminate\Support\Facades\DB::table('activity_logs')->insert(['website_id' => $page->website_id, 'action' => 'published scheduled page', 'subject' => $page->title, 'created_at' => now(), 'updated_at' => now()]);
         });
     });
-})->everyMinute()->withoutOverlapping();
+})->name('cms:publish-scheduled-pages')->everyMinute()->withoutOverlapping();
 
 \Illuminate\Support\Facades\Artisan::command('cms:doctor', function () {
     $failed = false;
