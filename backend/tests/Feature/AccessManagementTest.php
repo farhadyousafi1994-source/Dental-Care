@@ -25,7 +25,7 @@ class AccessManagementTest extends TestCase
     }
     public function test_creates_account_with_hash_and_never_returns_password(): void
     {
-        $response = $this->postJson('/api/users', $this->accountPayload())->assertOk()->assertJsonMissingPath('password')->assertJsonMissingPath('remember_token');
+        $response = $this->postJson('/api/users', $this->accountPayload())->assertCreated()->assertJsonMissingPath('password')->assertJsonMissingPath('remember_token');
         $user = User::findOrFail($response->json('id'));
         $this->assertTrue(Hash::check('TestingOnly123!', $user->password));
         $this->assertDatabaseHas('activity_logs', ['action' => 'created account', 'subject' => 'member@example.com']);
