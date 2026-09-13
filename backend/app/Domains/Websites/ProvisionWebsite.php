@@ -7,7 +7,7 @@ class ProvisionWebsite {
  return DB::transaction(function() use($data,$userId){
   $languages=$data['languages']??['en','fa','ps','ar'];$currencies=$data['currencies']??['USD','AFN','EUR','GBP','AED','SAR','PKR'];unset($data['languages'],$data['currencies']);
   $theme=DB::table('themes')->where('name',$data['theme']??'Evergreen')->first()??DB::table('themes')->first();
-  $tokens=json_decode($theme->tokens,true);$site=Website::create([...$data,'theme'=>$theme->name,'theme_id'=>$theme->id,'color'=>$tokens['primary'],'image'=>$data['image']??'/images/studio.jpg','created_by'=>$userId]);$now=now();
+  $tokens=json_decode($theme->tokens,true);$site=Website::create([...$data,'theme'=>$theme->name,'theme_id'=>$theme->id,'color'=>$tokens['primary'],'image'=>$data['image']??'/images/studio.jpg','created_by'=>$userId])->refresh();$now=now();
   DB::table('website_user')->insert(['website_id'=>$site->id,'user_id'=>$userId,'role_id'=>DB::table('roles')->where('name','Administrator')->value('id')]);
   foreach(array_unique([...$languages,'en','fa','ps','ar',$site->default_language]) as $language)DB::table('website_languages')->insert(['website_id'=>$site->id,'language_code'=>$language]);
   foreach(array_unique([...$currencies,$site->default_currency]) as $currency)DB::table('website_currencies')->insert(['website_id'=>$site->id,'currency_code'=>$currency,'exchange_rate'=>1,'created_at'=>$now,'updated_at'=>$now]);

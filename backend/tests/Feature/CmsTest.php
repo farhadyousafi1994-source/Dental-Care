@@ -32,4 +32,11 @@ class CmsTest extends TestCase {
  public function test_page_id_cannot_be_used_across_websites():void{
   $u=$this->admin();$first=app(ProvisionWebsite::class)->create(['name'=>'One','domain'=>'one.example.com'],$u->id);$second=app(ProvisionWebsite::class)->create(['name'=>'Two','domain'=>'two.example.com'],$u->id);$page=$first->pages()->first();$this->actingAs($u)->deleteJson("/api/websites/$second->id/pages/$page->id")->assertNotFound();$this->assertDatabaseHas('pages',['id'=>$page->id]);
  }
+ public function test_minimal_provisioning_hydrates_database_defaults_before_creating_relations():void{
+  $user=$this->admin();$site=app(ProvisionWebsite::class)->create(['name'=>'Defaults','domain'=>'defaults.example.com'],$user->id);
+  $this->assertSame('en',$site->default_language);$this->assertSame('USD',$site->default_currency);$this->assertSame('draft',$site->status);
+  $this->assertDatabaseHas('website_languages',['website_id'=>$site->id,'language_code'=>'en']);
+  $this->assertDatabaseHas('website_currencies',['website_id'=>$site->id,'currency_code'=>'USD']);
+  $this->assertSame('en',$site->pages()->first()->language);
+ }
 }
