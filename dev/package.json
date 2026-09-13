@@ -1,0 +1,1 @@
+{"name":"atelier-local-preview","private":true,"type":"module","scripts":{"start":"node --experimental-sqlite server.mjs","test":"node --experimental-sqlite --test test.mjs"},"dependencies":{"express":"^5.1.0","multer":"^2.0.2","sharp":"^0.35.4"}}

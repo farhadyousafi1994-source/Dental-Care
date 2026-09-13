@@ -1,0 +1,61 @@
+name: CMS validation
+on:
+  pull_request:
+  push:
+    branches: [main, 'arena/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  frontend-and-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            frontend/package-lock.json
+            dev/package-lock.json
+      - run: npm ci && npm run locales:check && npm test && npm run build
+        working-directory: frontend
+      - run: npm ci && npm test
+        working-directory: dev
+  laravel-mysql:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: website_cms_test
+          MYSQL_ROOT_PASSWORD: ci-only-password
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -pci-only-password"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: website_cms_test
+      DB_USERNAME: root
+      DB_PASSWORD: ci-only-password
+      CMS_ADMIN_PASSWORD: ''
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_mysql, pdo_sqlite, mbstring, xml, curl, fileinfo, gd, exif
+          tools: composer:v2
+          coverage: none
+      - run: composer install --prefer-dist --no-interaction --no-progress
+        working-directory: backend
+      - run: cp .env.example .env && php artisan key:generate && php artisan test --configuration=phpunit.mysql.xml
+        working-directory: backend
+      - name: Retain first resolved dependency lockfile for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: composer-lock
+          path: backend/composer.lock

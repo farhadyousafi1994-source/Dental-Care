@@ -1,0 +1,28 @@
+# Adapt paths, hostname, PHP socket and TLS configuration to your host.
+# HTTPS termination and an HTTP -> HTTPS redirect are required in production.
+server {
+    listen 80;
+    server_name cms.example.com;
+    root /var/www/atelier/frontend/dist;
+    index index.html;
+    client_max_body_size 50m;
+
+    location /api/ { try_files /nonexistent @laravel; }
+    location /up { try_files /nonexistent @laravel; }
+    location @laravel {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME /var/www/atelier/backend/public/index.php;
+        fastcgi_param SCRIPT_NAME /index.php;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+    }
+    location /storage/ {
+        alias /var/www/atelier/backend/storage/app/public/;
+        add_header X-Content-Type-Options nosniff always;
+    }
+    location ~ /storage/.*\.(php|phtml|phar|html|htm|svg)$ { return 404; }
+    location ~ /\. { deny all; }
+    location ~ \.php$ { return 404; }
+    location / { try_files $uri $uri/ /index.html; }
+}
+# Scheduler (as the application user):
+# * * * * * cd /var/www/atelier/backend && php artisan schedule:run >> /dev/null 2>&1
