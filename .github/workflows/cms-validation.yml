@@ -50,10 +50,34 @@ jobs:
           extensions: pdo_mysql, pdo_sqlite, mbstring, xml, curl, fileinfo, gd, exif
           tools: composer:v2
           coverage: none
-      - run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Install Laravel dependencies
         working-directory: backend
-      - run: cp .env.example .env && php artisan key:generate && php artisan test --configuration=phpunit.mysql.xml
+        run: |
+          set +e
+          composer install --prefer-dist --no-interaction --no-progress 2>&1 | tee /tmp/composer-install.log
+          result=${PIPESTATUS[0]}
+          if [ "$result" -ne 0 ]; then
+            while IFS= read -r line; do
+              line="${line//'%'/'%25'}"
+              printf '::error title=Composer install::%s\n' "$line"
+            done < <(tail -60 /tmp/composer-install.log)
+          fi
+          exit "$result"
+      - name: Test Laravel against MySQL
         working-directory: backend
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          set +e
+          php artisan test --configuration=phpunit.mysql.xml 2>&1 | tee /tmp/laravel-tests.log
+          result=${PIPESTATUS[0]}
+          if [ "$result" -ne 0 ]; then
+            while IFS= read -r line; do
+              line="${line//'%'/'%25'}"
+              printf '::error title=Laravel tests::%s\n' "$line"
+            done < <(tail -180 /tmp/laravel-tests.log)
+          fi
+          exit "$result"
       - name: Retain first resolved dependency lockfile for review
         uses: actions/upload-artifact@v4
         with:
