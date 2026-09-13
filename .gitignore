@@ -1,0 +1,11 @@
+node_modules/
+frontend/dist/
+backend/vendor/
+backend/.env
+.env
+.runtime/
+*.log
+.DS_Store
+
+*.tsbuildinfo
+image-search/

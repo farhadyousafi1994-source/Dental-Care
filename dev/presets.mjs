@@ -1,0 +1,7 @@
+export function registerPresets(app,{all,one,insert,update,remove,log}) {
+ function validate(d){const a=d.appearance;if(!['Evergreen','Editorial','Studio','Scholar'].includes(d.theme)||!a||!['primary','text','background'].every(k=>/^#[a-f0-9]{6}$/i.test(a[k]))||!['light','dark','system'].includes(a.mode)||!['Inter','Georgia','Arial'].includes(a.font)||!Number.isInteger(a.radius)||a.radius<0||a.radius>40||!Number.isInteger(a.container)||a.container<800||a.container>1600)throw new Error('Choose a valid theme, colors, font, mode and dimensions.');}
+ app.get('/api/websites/:site/theme-presets',(req,res)=>res.json(all('presets',req.siteId)));
+ function save(req,res){const d=req.body,id=+req.params.preset;if(id&&!one('presets',id,req.siteId))return res.status(404).json({message:'Preset not found.'});validate(d);if(!d.name?.trim()||d.name.length>120||all('presets',req.siteId).some(p=>p.name===d.name&&p.id!==id))return res.status(422).json({message:'Choose a unique preset name (up to 120 characters).'});const data={name:d.name,theme:d.theme,appearance:d.appearance};res.json(id?update('presets',id,req.siteId,data):insert('presets',req.siteId,data));log(req.siteId,'saved theme preset',d.name)}
+ app.post('/api/websites/:site/theme-presets',save);app.put('/api/websites/:site/theme-presets/:preset',save);
+ app.delete('/api/websites/:site/theme-presets/:preset',(req,res)=>{remove('presets',req.params.preset,req.siteId);log(req.siteId,'deleted theme preset','Preset #'+req.params.preset);res.json({ok:true})});
+}

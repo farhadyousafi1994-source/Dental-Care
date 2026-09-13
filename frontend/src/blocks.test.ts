@@ -1,0 +1,9 @@
+import{describe,it,expect}from'vitest'
+import{newBlock,walkBlocks,findBlock,containingBlocks,cloneBlocks,blockDepth,safeLink,imageStyles,blockTypes}from'./blocks'
+describe('Recursive page composition',()=>{
+ it('creates independent columns and nested content',()=>{const section=newBlock('Columns'),text=newBlock('Text');section.children![1].push(text);expect(walkBlocks([section])).toHaveLength(2);expect(section.children![0]).toHaveLength(0);expect(findBlock([section],text.id)).toBe(text);expect(containingBlocks([section],text.id)).toBe(section.children![1]);expect(blockDepth([section],text.id)).toBe(2)})
+ it('re-keys complete template trees without changing originals',()=>{const section=newBlock('Section'),card=newBlock('Cards');section.children![0].push(card);const copy=cloneBlocks([section]);expect(copy[0].id).not.toBe(section.id);expect(copy[0].children![0][0].id).not.toBe(card.id);expect(copy[0].children![0][0].items![0].id).not.toBe(card.items![0].id);expect(copy[0].children![0][0].title).toBe(card.title)})
+ it('creates all offered block types with unique ids',()=>{const blocks=blockTypes.map(newBlock);expect(new Set(blocks.map(b=>b.id)).size).toBe(blockTypes.length)})
+ it('prevents executable link schemes',()=>{expect(safeLink('javascript:alert(1)')).toBe('#about');expect(safeLink('data:text/html,test')).toBe('#about');expect(safeLink('//evil.example')).toBe('#about');expect(safeLink('https://example.com')).toBe('https://example.com');expect(safeLink('/site/1/about')).toBe('/site/1/about')})
+ it('applies independent image fit, focal point, radius and opacity',()=>{const b=newBlock('Image');b.imageStyle={fit:'contain',position:'top',radius:25,opacity:.5};expect(imageStyles(b)).toEqual({objectFit:'contain',objectPosition:'top',borderRadius:'25px',opacity:'0.5'})})
+})

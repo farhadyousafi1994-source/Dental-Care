@@ -1,0 +1,88 @@
+name: CMS validation
+on:
+  pull_request:
+  push:
+    branches: [main, 'arena/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  frontend-and-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            frontend/package-lock.json
+            dev/package-lock.json
+      - run: npm ci && npm run locales:check && npm test && npm run build
+        working-directory: frontend
+      - run: npm ci && npm test
+        working-directory: dev
+  laravel-mysql:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: website_cms_test
+          MYSQL_ROOT_PASSWORD: ci-only-password
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -pci-only-password"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: website_cms_test
+      DB_USERNAME: root
+      DB_PASSWORD: ci-only-password
+      CMS_ADMIN_PASSWORD: ''
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_mysql, pdo_sqlite, mbstring, xml, curl, fileinfo, gd, exif
+          tools: composer:v2
+          coverage: none
+      - name: Install Laravel dependencies
+        working-directory: backend
+        run: |
+          set +e
+          composer install --prefer-dist --no-interaction --no-progress 2>&1 | tee /tmp/composer-install.log
+          result=${PIPESTATUS[0]}
+          if [ "$result" -ne 0 ]; then
+            message="$(tail -60 /tmp/composer-install.log)"
+            message="${message//'%'/'%25'}"
+            message="${message//$'\n'/'%0A'}"
+            message="${message//$'\r'/'%0D'}"
+            printf '::error title=Composer install::%s\n' "$message"
+          fi
+          exit "$result"
+      - name: Test Laravel against MySQL
+        working-directory: backend
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          set +e
+          php vendor/bin/phpunit --configuration phpunit.mysql.xml --log-junit /tmp/laravel-junit.xml 2>&1 | tee /tmp/laravel-tests.log
+          result=${PIPESTATUS[0]}
+          python ../scripts/ci-test-summary.py /tmp/laravel-junit.xml
+          if [ "$result" -ne 0 ]; then
+            message="$(head -30 /tmp/laravel-tests.log; tail -10 /tmp/laravel-tests.log)"
+            message="${message//'%'/'%25'}"
+            message="${message//$'\n'/'%0A'}"
+            message="${message//$'\r'/'%0D'}"
+            printf '::error title=Laravel tests::%s\n' "$message"
+          fi
+          exit "$result"
+      - name: Retain first resolved dependency lockfile for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: composer-lock
+          path: backend/composer.lock
