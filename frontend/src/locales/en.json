@@ -103,6 +103,7 @@
   "Cancel": "Cancel",
   "Cancel order": "Cancel order",
   "Cancel this order?": "Cancel this order?",
+  "Cannot reach the CMS API. Start the backend on port 8000, then reload this page.": "Cannot reach the CMS API. Start the backend on port 8000, then reload this page.",
   "Canonical URL (optional)": "Canonical URL (optional)",
   "Caption": "Caption",
   "Card shadow": "Card shadow",

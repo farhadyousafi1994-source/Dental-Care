@@ -624,6 +624,7 @@
   "Your work, saved.": "ستاسو کار خوندي شو.",
   "Select this layout, then add a block": "دا جوړښت وټاکئ، بیا بلاک زیات کړئ",
   "Add a direct MP4 or WEBM video URL.": "د MP4 یا WEBM ویډیو مستقیمه پته زیاته کړئ.",
+  "Cannot reach the CMS API. Start the backend on port 8000, then reload this page.": "د CMS API سره اړیکه نه شي ټینګېدای. سرور په ۸۰۰۰ پورټ باندې پیل کړئ او دا پاڼه بیا بار کړئ.",
   "Confirm new password": "پټنوم تایید کړئ",
   "Account email": "برېښنالیک پته",
   "Account status": "حالت",

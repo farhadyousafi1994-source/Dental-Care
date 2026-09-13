@@ -37,3 +37,28 @@ describe('Session API client', () => {
     expect(fetchMock).toHaveBeenCalledTimes(4)
   })
 })
+
+describe('Unreachable backend', () => {
+  it('reports a proxy 500 with no body as an offline API, not a session failure', async () => {
+    fetchMock.mockResolvedValue(new Response('', { status: 500 })) // what the Vite proxy returns when nothing listens on port 8000
+    const {api,send}=await import('./api')
+    await expect(api('/auth/login',send('POST',{}))).rejects.toMatchObject({status:500,unreachable:true,message:expect.stringContaining('Cannot reach the CMS API')})
+    expect(fetchMock.mock.calls.map(c=>c[0])).toEqual(['/api/csrf']) // the credentials were never sent anywhere
+  })
+  it('reports an empty 5xx on a read as an offline API', async () => {
+    fetchMock.mockResolvedValue(new Response('', { status: 502 }))
+    const {api}=await import('./api');await expect(api('/auth/me')).rejects.toMatchObject({status:502,unreachable:true,message:expect.stringContaining('Cannot reach the CMS API')})
+  })
+  it('reports a refused connection as an offline API', async () => {
+    fetchMock.mockRejectedValue(new TypeError('Failed to fetch'))
+    const {api}=await import('./api');await expect(api('/dashboard')).rejects.toMatchObject({status:0,unreachable:true,message:expect.stringContaining('Cannot reach the CMS API')})
+  })
+  it('reports an HTML answer on the CSRF route as an offline API', async () => {
+    fetchMock.mockResolvedValue(new Response('<!doctype html><title>Wrong server</title>', { status: 200, headers: { 'Content-Type': 'text/html' } }))
+    const {api,send}=await import('./api');await expect(api('/save',send('POST',{}))).rejects.toMatchObject({unreachable:true})
+  })
+  it('still reports a session failure when the API answers with a JSON error', async () => {
+    fetchMock.mockResolvedValue(json({message:'CSRF token mismatch'},419))
+    const {api,send}=await import('./api');await expect(api('/save',send('POST',{}))).rejects.toMatchObject({status:419,unreachable:false,message:'Unable to establish a secure session.'})
+  })
+})
