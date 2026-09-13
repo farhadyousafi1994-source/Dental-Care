@@ -74,7 +74,7 @@ jobs:
           result=${PIPESTATUS[0]}
           python ../scripts/ci-test-summary.py /tmp/laravel-junit.xml
           if [ "$result" -ne 0 ]; then
-            message="$(tail -45 /tmp/laravel-tests.log)"
+            message="$(head -30 /tmp/laravel-tests.log; tail -10 /tmp/laravel-tests.log)"
             message="${message//'%'/'%25'}"
             message="${message//$'\n'/'%0A'}"
             message="${message//$'\r'/'%0D'}"
