@@ -624,6 +624,7 @@
   "Your work, saved.": "تم حفظ عملك.",
   "Select this layout, then add a block": "حدد هذا التخطيط ثم أضف كتلة",
   "Add a direct MP4 or WEBM video URL.": "أضف رابط فيديو مباشر بصيغة MP4 أو WEBM.",
+  "Cannot reach the CMS API. Start the backend on port 8000, then reload this page.": "تعذر الوصول إلى واجهة API لنظام إدارة المحتوى. شغّل الخادم على المنفذ 8000 ثم أعد تحميل هذه الصفحة.",
   "Confirm new password": "تأكيد كلمة المرور",
   "Account email": "البريد الإلكتروني",
   "Account status": "الحالة",

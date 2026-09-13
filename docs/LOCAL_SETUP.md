@@ -135,6 +135,7 @@ The GitHub workflow `.github/workflows/cms-validation.yml` runs the frontend/pre
 | Login rejected | Seeded admin exists, account active, correct password, not the demo identity |
 | Missing application key | `php artisan key:generate` only for a fresh installation |
 | 419 CSRF mismatch | Use one hostname, correct cookie settings, clear old cookies; check session table and APP_URL |
+| `Cannot reach the CMS API.` / `Unable to establish a secure session.` on the sign-in screen | Nothing answers on port 8000. The Vite proxy then replies to `/api/csrf` with an empty `500`, which used to be reported as a session failure. Start Laravel (`php artisan serve --host=127.0.0.1 --port=8000`) or the preview adapter (`npm start --prefix dev`), keep the browser on one hostname, and reload |
 | API 500 | Read `backend/storage/logs/laravel.log`; share redacted error messages, never `.env` |
 | Preview still shows demo records | The Node adapter, not Laravel, is running on port 8000 |
 | Upload returns 413 | Adjust nginx/Apache request limit and PHP upload_max_filesize/post_max_size; app limit is 20 MB/file |

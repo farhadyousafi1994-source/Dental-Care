@@ -624,6 +624,7 @@
   "Your work, saved.": "کار شما ذخیره شد.",
   "Select this layout, then add a block": "این چیدمان را انتخاب و سپس بلوک اضافه کنید",
   "Add a direct MP4 or WEBM video URL.": "نشانی مستقیم ویدیوی MP4 یا WEBM را اضافه کنید.",
+  "Cannot reach the CMS API. Start the backend on port 8000, then reload this page.": "به API سیستم مدیریت محتوا دسترسی نیست. سرور را روی پورت ۸۰۰۰ اجرا کنید و این صفحه را دوباره بار کنید.",
   "Confirm new password": "تأیید رمز عبور",
   "Account email": "نشانی ایمیل",
   "Account status": "وضعیت",

@@ -38,3 +38,11 @@ Added five Laravel feature tests in `BuilderModulesTest.php`. They have **not be
 ## Contact/newsletter, commerce and localization follow-up
 
 Latest: **21 frontend tests**, **25 preview API tests**, **811 catalogued messages with no missing RTL translations**, TypeScript/Vite build and **64 PHP syntax checks** passed. Chromium completed product creation, checkout, cancellation/stock restoration, contact inbox, newsletter confirmation, three RTL admin views and mobile shop. A separate check verifies computed RTL body direction, right-side sidebar and mobile drawer. Six native Laravel feature tests were added but not executed here. Detailed evidence and limits: [BUSINESS_MODULES.md](BUSINESS_MODULES.md#validation-performed).
+
+## Sign-in failure diagnostics
+
+Reproduced the reported **“Unable to establish a secure session.”** error on the sign-in screen. Cause: nothing was listening on port 8000, so the Vite proxy answered `GET /api/csrf` with `HTTP 500` and an empty body, and the API client reported every failed `/api/csrf` response as a session failure — including a backend that was simply not running.
+
+The client now separates the two cases: an API that never answers (refused connection, empty 5xx, or a non-JSON reply on the CSRF route) is reported as “Cannot reach the CMS API. Start the backend on port 8000, then reload this page.”, while an API that answers with a JSON error still reports the session message. The sign-in card shows the offline explanation inline instead of only failing on submit.
+
+Executed in this workspace: **31 frontend tests** (API client classification and retry behaviour, store boot with an offline backend, RTL translation of the notice, server-rendered sign-in card with and without the notice), `vue-tsc -b` plus the Vite production build, the locales check (**812 messages, 0 missing**) and the **25-test** preview API suite. Not executed: any Laravel/PHP check — PHP and Composer are unavailable here — and a real-browser render of the sign-in screen.
